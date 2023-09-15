@@ -2,7 +2,15 @@ import React from 'react';
 import { Skeleton } from './Skeleton';
 import { User } from './User';
 
-export const Users = ({ items, isLoading, search, setSearch }) => {
+export const Users = ({
+  items,
+  isLoading,
+  search,
+  setSearch,
+  onClickInvite,
+  invites,
+  onClickSendInvites,
+}) => {
   return (
     <>
       <div className="search">
@@ -17,9 +25,9 @@ export const Users = ({ items, isLoading, search, setSearch }) => {
       </div>
       {isLoading ? (
         <div className="skeleton-list">
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
+          {[...Array(5)].map((_, i) => (
+            <Skeleton key={i} />
+          ))}
         </div>
       ) : (
         <ul className="users-list">
@@ -30,11 +38,20 @@ export const Users = ({ items, isLoading, search, setSearch }) => {
                 user.email.toLowerCase().includes(search.toLowerCase()),
             )
             .map((user) => (
-              <User user={user} key={user.id} />
+              <User
+                user={user}
+                key={user.id}
+                isInvites={invites.includes(user.id)}
+                onClickInvite={onClickInvite}
+              />
             ))}
         </ul>
       )}
-      <button className="send-invite-btn">Отправить приглашение</button>
+      {invites.length > 0 && (
+        <button onClick={() => onClickSendInvites()} className="send-invite-btn">
+          Отправить приглашение
+        </button>
+      )}
     </>
   );
 };
